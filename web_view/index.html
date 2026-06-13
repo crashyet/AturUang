@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>web_view</title>
+
+    <style>
+      @media screen and (min-width: 1280px) {
+        .app-container {
+          max-width: 390px;
+          height: auto;
+          zoom: 125%;
+        }
+      }
+
+      @media screen and (min-width: 640px) {
+        body {
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          /* overflow: hidden; */
+          /* background: #f0f0f0; */
+        }
+        .app-container {
+          width: 100%;
+          max-width: 390px;
+          /* min-height: 100dvh; */
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          box-sizing: border-box;
+          /* scale: 1.2;
+          transform-origin: top center; */
+
+          /* zoom: 125%; */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div id="root"></div>
+      <script type="module" src="/src/main.jsx"></script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-toska: rgba(55, 161, 161, 1);
+  --color-white: rgba(255, 255, 255, 1);
+  --color-collection-1-color: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-collection-1-2: rgba(253, 149, 70, 1);
+  --color-yellow: rgba(245, 185, 95, 1);
+}
+
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    @apply appearance-none bg-transparent border-0 outline-none;
+  }
+}
