@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ReportController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/auth/google', [AuthController::class, 'googleLogin']);
+Route::post('/auth/check-email', [AuthController::class, 'checkEmail']);
 
 // Protected routes (Sanctum)
 Route::middleware('auth:sanctum')->group(function () {

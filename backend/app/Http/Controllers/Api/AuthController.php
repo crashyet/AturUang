@@ -230,6 +230,38 @@ class AuthController extends Controller
     }
 
     /**
+     * Check if email or google_id is already registered.
+     */
+    public function checkEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'google_id' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $exists = User::where('email', $request->email)
+            ->orWhere(function ($query) use ($request) {
+                if ($request->filled('google_id')) {
+                    $query->where('google_id', $request->google_id);
+                }
+            })
+            ->exists();
+
+        return response()->json([
+            'status' => 'success',
+            'registered' => $exists,
+        ]);
+    }
+
+    /**
      * Get the authenticated user's profile.
      */
     public function profile(Request $request)
