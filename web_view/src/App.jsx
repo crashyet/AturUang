@@ -5,12 +5,15 @@ import Splash from './splash/splash.jsx'
 import Page1 from './splash/page1.jsx'
 import Page2 from './splash/page2.jsx'
 import Page3 from './splash/page3.jsx'
+import { HomeScreen } from './homescreen/main.jsx'
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Splash />} />
+        <Route path="/home" element={<HomeScreen />} />
         <Route path="/splash" element={<Splash />} />
         <Route path="/page1" element={<Page1 />} />
         <Route path="/page2" element={<Page2 />} />
@@ -21,3 +24,4 @@ function App() {
 }
 
 export default App
+

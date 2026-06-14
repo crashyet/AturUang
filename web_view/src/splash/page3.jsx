@@ -104,11 +104,12 @@ const page3 = () => {
 
   return (
     <main
-      className="relative w-full h-screen bg-toska overflow-hidden"
+      className="relative flex flex-col justify-between w-full h-screen bg-toska overflow-hidden"
       aria-labelledby={`${formId}-title`}
     >
+      {/* Decorative background shapes */}
       <div
-        className="absolute top-[-323px] left-[calc(50.00%_-_67px)] w-[535px] h-[698px] rotate-[-153.36deg]"
+        className="absolute top-[-323px] left-[calc(50.00%_-_67px)] w-[535px] h-[698px] rotate-[-153.36deg] z-0 pointer-events-none"
         aria-hidden="true"
       >
         <div className="absolute top-0 left-[calc(50.00%_-_267px)] w-[535px] h-[453px] bg-[#6dd0d01a] rounded-[267.5px/226.5px]" />
@@ -116,90 +117,102 @@ const page3 = () => {
         <div className="absolute top-[79px] left-[calc(50.00%_-_267px)] w-[535px] h-[453px] bg-[#6dd0d033] rounded-[267.5px/226.5px]" />
         <div className="absolute top-[245px] left-[calc(50.00%_-_267px)] w-[535px] h-[453px] bg-[#6cd0d0] rounded-[267.5px/226.5px]" />
       </div>
+
+      {/* White content card */}
       <section
-        className="absolute bottom-0 w-full h-[850px] bg-white rounded-[24px_24px_0px_0px]"
+        className="relative bg-white rounded-t-[24px] flex flex-col items-center justify-between w-full px-6 pt-6 pb-10 z-10 flex-grow mt-10"
         aria-label="Pilih jenis keuangan"
-      />
-      <div
-        className="absolute top-[305px] left-[49px] w-[332px] h-[356px]"
-        aria-hidden="true"
       >
-        {decorativeCircles.map((item, index) =>
-          item.type === "img" ? (
-            <img
-              key={index}
-              className={item.className}
-              alt={item.alt}
-              src={item.src}
-            />
-          ) : (
+        {/* Indicators */}
+        <div
+          className="inline-flex gap-1.5 mb-6"
+          aria-label="Langkah 3 dari 3"
+        >
+          {pagerDots.map((dot, index) => (
             <div
               key={index}
-              className={item.className}
+              className={`relative ${dot.widthClass} h-2.5 ${dot.bgClass} ${dot.roundedClass}`}
+              aria-hidden="true"
             />
-          )
-        )}
-      </div>
-      <div
-        className="inline-flex gap-1.5 top-[98px] left-[calc(50.00%_-_34px)] items-center absolute"
-        aria-label="Langkah 3 dari 3"
-      >
-        {pagerDots.map((dot, index) => (
-          <div
-            key={index}
-            className={`relative ${dot.widthClass} h-2.5 ${dot.bgClass} ${dot.roundedClass}`}
-            aria-hidden="true"
-          />
-        ))}
-      </div>
-      <h1
-        id={`${formId}-title`}
-        className="absolute top-[163px] left-[calc(50.00%_-_185px)] w-[370px] [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-3xl text-center tracking-[0] leading-[35.0px]"
-      >
-        Pilih jenis keuangan yang akan kamu kelola
-      </h1>
-      <img
-        className="absolute top-[312px] left-[calc(50.00%_-_145px)] w-[360px] h-[309px]"
-        alt="Ilustrasi kartu keuangan"
-        src={group26}
-      />
-      <form
-        className="contents"
-        aria-labelledby={`${formId}-title`}
-      >
-        <fieldset className="contents">
-          <legend className="sr-only">Jenis keuangan yang akan dikelola</legend>
-          {options.map((option) => {
-            const checked = selectedType === option.value;
+          ))}
+        </div>
 
-            return (
-              <label
-                key={option.id}
-                onClick={() => handleOptionSelect(option.value)}
-                className={`flex w-[350px] h-[50px] justify-center gap-2.5 px-[111px] py-1 left-[calc(50.00%_-_175px)] rounded-[25px] overflow-hidden border-2 border-solid border-yellow items-center absolute cursor-pointer ${option.topClass} ${
-                  option.isFilled ? "bg-[#fd9546]" : "bg-transparent"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="financialType"
-                  value={option.value}
-                  checked={checked}
-                  onChange={() => {}}
-                  className="sr-only"
-                  aria-label={option.label}
+        {/* Title */}
+        <h1
+          id={`${formId}-title`}
+          className="w-full [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-2xl md:text-3xl text-center tracking-[0] leading-tight mb-2"
+        >
+          Pilih jenis keuangan yang akan kamu kelola
+        </h1>
+
+        {/* Decorative elements behind image */}
+        <div className="relative w-full flex-1 flex items-center justify-center min-h-[250px]">
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden max-w-[340px] mx-auto">
+            {decorativeCircles.map((item, index) =>
+              item.type === "img" ? (
+                <img
+                  key={index}
+                  className={item.className}
+                  alt={item.alt}
+                  src={item.src}
                 />
-                <span
-                  className={`relative w-fit [font-family:'Poppins-SemiBold',Helvetica] font-semibold ${option.textClass} text-xl text-center tracking-[0] leading-[23.3px] whitespace-nowrap ${option.extraTextClass}`}
+              ) : (
+                <div
+                  key={index}
+                  className={item.className}
+                />
+              )
+            )}
+          </div>
+          
+          <img
+            className="w-auto h-[34vh] max-h-[310px] object-contain z-10"
+            alt="Ilustrasi kartu keuangan"
+            src={group26}
+          />
+        </div>
+
+        {/* Form selection */}
+        <form
+          className="w-full flex flex-col items-center gap-3 mt-4"
+          aria-labelledby={`${formId}-title`}
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <fieldset className="w-full flex flex-col items-center gap-3">
+            <legend className="sr-only">Jenis keuangan yang akan dikelola</legend>
+            {options.map((option) => {
+              const checked = selectedType === option.value;
+
+              return (
+                <label
+                  key={option.id}
+                  onClick={() => handleOptionSelect(option.value)}
+                  className={`flex w-full max-w-[340px] h-[50px] justify-center items-center rounded-full border-2 border-solid border-[#fd9546] cursor-pointer transition-all hover:scale-[1.01] active:scale-[0.99] ${
+                    checked ? "bg-[#fd9546]" : "bg-transparent"
+                  }`}
                 >
-                  {option.label}
-                </span>
-              </label>
-            );
-          })}
-        </fieldset>
-      </form>
-      <div className="absolute top-[692px] left-0 w-5 h-5" aria-hidden="true" />
+                  <input
+                    type="radio"
+                    name="financialType"
+                    value={option.value}
+                    checked={checked}
+                    onChange={() => {}}
+                    className="sr-only"
+                    aria-label={option.label}
+                  />
+                  <span
+                    className={`[font-family:'Poppins-SemiBold',Helvetica] font-semibold text-lg text-center tracking-[0] leading-normal whitespace-nowrap ${
+                      checked ? "text-white" : "text-[#fd9546]"
+                    }`}
+                  >
+                    {option.label}
+                  </span>
+                </label>
+              );
+            })}
+          </fieldset>
+        </form>
+      </section>
 
       {/* Styled Premium Alert Modal */}
       {showAlert && (
