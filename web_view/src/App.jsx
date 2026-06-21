@@ -7,6 +7,7 @@ import Page2 from './splash/page2.jsx'
 import Page3 from './splash/page3.jsx'
 import { HomeScreen } from './homescreen/main.jsx'
 import PrivacyPolicy from './privacy/PrivacyPolicy.jsx'
+import DeleteAccount from './privacy/DeleteAccount.jsx'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/page2" element={<Page2 />} />
         <Route path="/page3" element={<Page3 />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
       </Routes>
     </BrowserRouter>
   )

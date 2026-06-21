@@ -109,10 +109,13 @@ export default function PrivacyPolicy() {
 
         <section style={{ marginBottom: '28px' }}>
           <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1E293B', marginBottom: '12px' }}>
-            5. Hak Pengguna atas Data
+            5. Hak Pengguna atas Data & Penghapusan Akun
           </h2>
-          <p style={{ fontSize: '15px', color: '#475569', margin: 0 }}>
+          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '12px' }}>
             Anda memiliki hak penuh untuk mengubah nama, email, nama bisnis, serta mengedit atau menghapus seluruh catatan transaksi keuangan Anda kapan saja langsung melalui fitur edit profil dan riwayat transaksi di dalam aplikasi.
+          </p>
+          <p style={{ fontSize: '15px', color: '#475569', margin: 0 }}>
+            Jika Anda ingin mengajukan permohonan penghapusan akun beserta seluruh data terkait secara permanen, silakan gunakan halaman berikut: <a href="/delete-account" style={{ color: '#FF8E42', fontWeight: '600', textDecoration: 'none' }}>Formulir Penghapusan Akun & Data Atur Uang</a>.
           </p>
         </section>
 
