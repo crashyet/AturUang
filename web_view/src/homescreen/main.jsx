@@ -11,7 +11,7 @@ export const HomeScreen = () => {
 
   // Parse query parameters
   const queryParams = new URLSearchParams(window.location.search);
-  const name = "Owner";
+  const name = queryParams.get("name") || "Owner";
   const businessName = queryParams.get("businessName");
   const totalAssetVal = parseFloat(queryParams.get("totalAsset") || "0");
   const totalIncomeVal = parseFloat(queryParams.get("totalIncome") || "0");
