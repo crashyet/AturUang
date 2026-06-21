@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\Account;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -29,8 +30,10 @@ class TransactionController extends Controller
 
         // Type filter (Pemasukan / Pengeluaran)
         if ($request->filled('type') && $request->input('type') !== 'Semua') {
-            $type = $request->input('type') === 'Pemasukan' ? 'pemasukan' : 'pengeluaran';
-            $query->where('type', $type);
+            $type = strtolower($request->input('type'));
+            if ($type === 'pemasukan' || $type === 'pengeluaran') {
+                $query->where('type', $type);
+            }
         }
 
         // Account filter
@@ -44,11 +47,11 @@ class TransactionController extends Controller
         // Date filter
         if ($request->filled('date_filter') && $request->input('date_filter') !== 'Semua') {
             $dateFilter = $request->input('date_filter');
-            if ($dateFilter === 'Hari ini') {
+            if ($dateFilter === 'Hari ini' || $dateFilter === 'today') {
                 $query->whereDate('date', Carbon::today());
-            } elseif ($dateFilter === 'Minggu ini') {
+            } elseif ($dateFilter === 'Minggu ini' || $dateFilter === 'week') {
                 $query->whereBetween('date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
-            } elseif ($dateFilter === 'Bulan ini') {
+            } elseif ($dateFilter === 'Bulan ini' || $dateFilter === 'month') {
                 $query->whereMonth('date', Carbon::now()->month)->whereYear('date', Carbon::now()->year);
             }
         }
@@ -98,12 +101,12 @@ class TransactionController extends Controller
             ], 422);
         }
 
-        $account = $request->user()->accounts()->where('name', $request->input('account_name'))->first();
+        $account = $request->user()->accounts()->where('name', $request->input('source_of_funds'))->first();
 
         if (!$account) {
             return response()->json([
                 'status' => 'error',
-                'message' => "Akun dengan nama '{$request->input('account_name')}' tidak ditemukan."
+                'message' => "Akun dengan nama '{$request->input('source_of_funds')}' tidak ditemukan."
             ], 404);
         }
 
@@ -112,9 +115,22 @@ class TransactionController extends Controller
             'account_id' => $account->id,
             'type' => $request->input('type'),
             'amount' => $request->input('amount'),
-            'source_of_funds' => $request->input('source_of_funds'),
+            'source_of_funds' => $request->input('account_name'),
             'notes' => $request->input('notes'),
             'date' => $request->input('date'),
+        ]);
+
+        // Create notification on database
+        $formattedAmount = 'Rp' . number_format($transaction->amount, 0, ',', '.');
+        $title = $transaction->type === 'pemasukan' ? 'Pemasukan Berhasil Dicatat' : 'Pengeluaran Berhasil Dicatat';
+        $body = ($transaction->type === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran') . " sebesar {$formattedAmount} telah berhasil dicatat ke {$account->name}.";
+
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'title' => $title,
+            'body' => $body,
+            'type' => $transaction->type,
+            'is_read' => false,
         ]);
 
         // Refresh account details to get new balance

@@ -107,12 +107,12 @@ const page1 = () => {
         </div>
 
         {/* Title */}
-        <h1 className="w-full [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-3xl md:text-4xl text-center tracking-[0] leading-tight mb-4">
+        <h1 className="w-full [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-[2rem] md:text-4xl text-center tracking-[0] leading-tight mb-4">
           Selamat Datang Di Atur Uang
         </h1>
 
         {/* Subtitle */}
-        <p className="w-full max-w-[450px] opacity-80 [font-family:'Poppins-Medium',Helvetica] font-medium text-[#7a7a7a] text-sm md:text-base text-center tracking-[0] leading-normal mb-8">
+        <p className="w-full max-w-[450px] opacity-80 [font-family:'Poppins-Medium',Helvetica] font-medium text-[#7a7a7a] text-base md:text-base text-center tracking-[0] leading-normal mb-8">
           Yuk mulai kelola keuanganmu dengan lebih bijak dan teratur dari sekarang.
         </p>
 
@@ -123,7 +123,7 @@ const page1 = () => {
           aria-label="Lanjut ke langkah berikutnya"
           className="w-16 h-16 md:w-20 md:h-20 flex bg-[#fd9546] rounded-full shadow-[0px_12px_20px_#ff8d2833,inset_0px_0px_7.1px_#ff8d28] items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <img src={TypcnArrowUp} alt="" className="w-6 h-6 md:w-8 md:h-8" />
+          <img src={TypcnArrowUp} alt="" className="w-7 h-7 md:w-8 md:h-8" />
         </button>
       </section>
     </main>

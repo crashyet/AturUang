@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendOtpMail;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -35,6 +38,17 @@ class AuthController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+
+        // Enforce OTP verification for registration
+        $isOtpVerified = Cache::get('otp_verified_register_' . $request->email);
+        if (!$isOtpVerified) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email belum diverifikasi dengan OTP.'
+            ], 400);
+        }
+        // Consume the verification flag
+        Cache::forget('otp_verified_register_' . $request->email);
 
         $user = User::create([
             'name' => $request->business_name,
@@ -200,7 +214,7 @@ class AuthController extends Controller
                     'business_name' => $request->business_name ?? 'Usaha ' . $name,
                     'location' => $request->location ?? 'Belum Diatur',
                     'business_category' => $request->business_category ?? 'Lainnya',
-                    'account_type' => 'UMKM',
+                    'account_type' => $request->account_type ?? 'UMKM',
                 ]);
 
                 // Create default accounts for new user
@@ -284,6 +298,7 @@ class AuthController extends Controller
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'gender' => 'required|string',
+            'account_type' => 'nullable|string|in:UMKM,Personal',
         ]);
 
         if ($validator->fails()) {
@@ -299,12 +314,120 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'gender' => $request->gender,
+            'account_type' => $request->account_type ?? $user->account_type,
         ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Profil berhasil diperbarui.',
             'data' => $user,
+        ]);
+    }
+
+    /**
+     * Generate and send OTP to user's email.
+     */
+    public function sendOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'type' => 'required|string|in:register,forgot_password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $email = $request->email;
+        $type = $request->type;
+
+        // Business rules check
+        if ($type === 'register') {
+            $exists = User::where('email', $email)->exists();
+            if ($exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Email sudah terdaftar.'
+                ], 400);
+            }
+        } elseif ($type === 'forgot_password') {
+            $exists = User::where('email', $email)->exists();
+            if (!$exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Email tidak terdaftar.'
+                ], 400);
+            }
+        }
+
+        // Generate 5-digit OTP
+        $otp = str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+
+        // Store OTP in Cache for 5 minutes
+        Cache::put('otp_' . $type . '_' . $email, $otp, now()->addMinutes(5));
+
+        try {
+            // Send OTP email
+            Mail::to($email)->send(new SendOtpMail($otp));
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengirim email OTP. Silakan coba lagi.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Kode OTP berhasil dikirim ke email Anda.'
+        ]);
+    }
+
+    /**
+     * Verify OTP code.
+     */
+    public function verifyOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'otp' => 'required|string|size:5',
+            'type' => 'required|string|in:register,forgot_password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $email = $request->email;
+        $otp = $request->otp;
+        $type = $request->type;
+
+        $cachedOtp = Cache::get('otp_' . $type . '_' . $email);
+
+        if (!$cachedOtp || $cachedOtp !== $otp) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kode OTP tidak valid atau sudah kedaluwarsa.'
+            ], 400);
+        }
+
+        // Set verification flag in Cache for 15 minutes
+        Cache::put('otp_verified_' . $type . '_' . $email, true, now()->addMinutes(15));
+        
+        // Clear OTP code from cache
+        Cache::forget('otp_' . $type . '_' . $email);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Kode OTP valid.'
         ]);
     }
 }

@@ -104,7 +104,7 @@ class ReportController extends Controller
             $expense = $transactions->where('type', 'pengeluaran')->sum('amount');
             
             $breakdown[] = [
-                'label' => Carbon::create()->month($month)->isoFormat('MMMM YYYY'),
+                'label' => Carbon::create($year, $month, 1)->isoFormat('MMMM YYYY'),
                 'pemasukan' => floatval($income),
                 'pengeluaran' => floatval($expense),
                 'keuntungan' => floatval($income - $expense),
@@ -129,5 +129,82 @@ class ReportController extends Controller
                 'breakdown' => $breakdown,
             ]
         ]);
+    }
+
+    /**
+     * Export report data as a CSV (Excel compatible) file.
+     */
+    public function exportReport(Request $request)
+    {
+        $monthStr = $request->input('month');
+        $sumberDana = $request->input('sumber_dana', 'Semua');
+        $period = $request->input('period', 'Harian');
+
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+
+        if ($monthStr) {
+            $monthsMap = [
+                'januari' => 1, 'februari' => 2, 'maret' => 3, 'april' => 4,
+                'mei' => 5, 'juni' => 6, 'juli' => 7, 'agustus' => 8,
+                'september' => 9, 'oktober' => 10, 'november' => 11, 'desember' => 12
+            ];
+            
+            $parts = explode(' ', strtolower($monthStr));
+            if (count($parts) === 2) {
+                if (isset($monthsMap[$parts[0]])) {
+                    $month = $monthsMap[$parts[0]];
+                }
+                $year = intval($parts[1]);
+            }
+        }
+
+        $query = $request->user()->transactions()
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year);
+
+        if ($sumberDana !== 'Semua') {
+            $query->whereHas('account', function ($q) use ($sumberDana) {
+                $q->where('name', $sumberDana);
+            });
+        }
+
+        $transactions = $query->orderBy('date', 'asc')->get();
+
+        $filename = "Laporan_Keuangan_" . str_replace(' ', '_', $monthStr) . "_" . $period . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Tanggal', 'Jenis', 'Nominal', 'Kategori', 'Sumber Dana', 'Catatan'];
+
+        $callback = function() use($transactions, $columns) {
+            $file = fopen('php://output', 'w');
+            
+            // UTF-8 BOM
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns);
+
+            foreach ($transactions as $t) {
+                fputcsv($file, [
+                    $t->date->format('Y-m-d'),
+                    ucfirst($t->type),
+                    floatval($t->amount),
+                    $t->source_of_funds,
+                    $t->account ? $t->account->name : 'N/A',
+                    $t->notes ?? '-'
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

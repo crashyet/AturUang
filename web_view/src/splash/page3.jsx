@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 const page3 = () => {
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState("business");
-  const [showAlert, setShowAlert] = useState(false);
   const formId = useId();
 
   const options = [
@@ -88,17 +87,13 @@ const page3 = () => {
 
   const handleOptionSelect = (value) => {
     setSelectedType(value);
-    if (value === "individual") {
-      setShowAlert(true);
-    } else if (value === "business") {
-      // Notify Flutter app on mobile (using JavascriptChannel)
-      if (window.FlutterOnboarding) {
-        window.FlutterOnboarding.postMessage("navigate_to_login");
-      }
-      // Notify Flutter app on Web (using iframe postMessage)
-      if (window.parent) {
-        window.parent.postMessage("navigate_to_login", "*");
-      }
+    // Notify Flutter app on mobile (using JavascriptChannel)
+    if (window.FlutterOnboarding) {
+      window.FlutterOnboarding.postMessage("navigate_to_login");
+    }
+    // Notify Flutter app on Web (using iframe postMessage)
+    if (window.parent) {
+      window.parent.postMessage("navigate_to_login", "*");
     }
   };
 
@@ -140,7 +135,7 @@ const page3 = () => {
         {/* Title */}
         <h1
           id={`${formId}-title`}
-          className="w-full [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-2xl md:text-3xl text-center tracking-[0] leading-tight mb-2"
+          className="w-full [font-family:'Poppins-SemiBold',Helvetica] font-semibold text-[#000000] text-[2rem] md:text-4xl text-center tracking-[0] leading-tight mb-2"
         >
           Pilih jenis keuangan yang akan kamu kelola
         </h1>
@@ -213,32 +208,7 @@ const page3 = () => {
           </fieldset>
         </form>
       </section>
-
-      {/* Styled Premium Alert Modal */}
-      {showAlert && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-[340px] flex flex-col items-center shadow-2xl border border-[#fd9546]/10 animate-fade-in transform scale-100 transition-transform duration-300">
-            <div className="w-16 h-16 rounded-full bg-[#fd9546]/10 flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-[#fd9546]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            <h2 className="[font-family:'Poppins-SemiBold',Helvetica] font-semibold text-xl text-black text-center mb-2">
-              Segera Hadir!
-            </h2>
-            <p className="[font-family:'Poppins-Medium',Helvetica] font-medium text-sm text-[#7A7A7A] text-center leading-[20px] mb-6">
-              Fitur untuk kategori Individu saat ini sedang dalam tahap pengembangan. Silakan pilih kategori UMKM/Bisnis untuk melanjutkan.
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowAlert(false)}
-              className="w-full h-12 bg-[#fd9546] hover:bg-[#e07f35] active:scale-[0.98] text-white [font-family:'Poppins-SemiBold',Helvetica] font-semibold rounded-full shadow-lg shadow-[#fd9546]/20 transition-all"
-            >
-              Mengerti
-            </button>
-          </div>
-        </div>
-      )}
+      
     </main>
   );
 };

@@ -11,11 +11,11 @@ export const HomeScreen = () => {
 
   // Parse query parameters
   const queryParams = new URLSearchParams(window.location.search);
-  const name = queryParams.get("name") || "Owner";
-  const businessName = queryParams.get("businessName") || "Patra Asri";
-  const totalAssetVal = parseFloat(queryParams.get("totalAsset") || "10654258");
-  const totalIncomeVal = parseFloat(queryParams.get("totalIncome") || "10654258");
-  const totalExpenseVal = parseFloat(queryParams.get("totalExpense") || "10654258");
+  const name = "Owner";
+  const businessName = queryParams.get("businessName");
+  const totalAssetVal = parseFloat(queryParams.get("totalAsset") || "0");
+  const totalIncomeVal = parseFloat(queryParams.get("totalIncome") || "0");
+  const totalExpenseVal = parseFloat(queryParams.get("totalExpense") || "0");
 
   let initialAccounts = [];
   try {
@@ -29,9 +29,10 @@ export const HomeScreen = () => {
 
   if (initialAccounts.length === 0) {
     initialAccounts = [
-      { id: "tunai", name: "Tunai", balance: 10654258, income: 10654258, expense: 10654258, isVisible: true },
-      { id: "bca", name: "Bank BCA", balance: 10654258, income: 10654258, expense: 10654258, isVisible: true },
-      { id: "bni", name: "Bank BNI", balance: 10654258, income: 10654258, expense: 10654258, isVisible: true }
+      { id: "tunai", name: "Tunai", balance: 0, income: 0, expense: 0, isVisible: true },
+      { id: "bni", name: "BNI", balance: 0, income: 0, expense: 0, isVisible: true },
+      { id: "bri", name: "BRI", balance: 0, income: 0, expense: 0, isVisible: true },
+      { id: "mandiri", name: "Bank Mandiri", balance: 0, income: 0, expense: 0, isVisible: true }
     ];
   }
 
@@ -106,10 +107,10 @@ export const HomeScreen = () => {
 
         {/* Center Labels */}
         <div className="flex flex-col items-center justify-center">
-          <p className="font-medium text-[#696969] text-[14px] leading-tight">
+          <p className="font-medium text-[#696969] text-[0.875rem] leading-tight">
             Halo, {name}
           </p>
-          <h1 className="font-bold text-[#000000] text-[16px] leading-tight font-montserrat">
+          <h1 className="font-bold text-[#000000] text-[1rem] leading-tight font-montserrat">
             {businessName}
           </h1>
         </div>
@@ -132,7 +133,7 @@ export const HomeScreen = () => {
 
       <section aria-label="Ringkasan total aset" className="px-[21px] mt-6 flex-shrink-0 z-20 w-full">
         {/* Assets Gradient Card */}
-        <div className="w-full max-w-[388px] h-[160px] rounded-[25px] bg-gradient-to-b from-[#66D8D8] via-[#3B9E9E] to-[#2B8282] relative overflow-hidden shadow-lg p-6 flex flex-col justify-between select-none mx-auto">
+        <div className="w-full max-w-[388px] h-[150px] rounded-[25px] bg-gradient-to-b from-[#66D8D8] via-[#3B9E9E] to-[#2B8282] relative overflow-hidden shadow-lg p-6 flex flex-col justify-between select-none mx-auto">
           {/* Ellipse background glow */}
           <div className="absolute top-[-50px] right-[-30px] w-[132px] h-[132px] bg-[#f5b95f]/34 rounded-full filter blur-[20px] pointer-events-none" />
           
@@ -146,12 +147,12 @@ export const HomeScreen = () => {
 
           {/* Card Content */}
           <div className="relative z-10">
-            <h2 className="font-bold text-[18px] text-white tracking-wide">
+            <h2 className="font-bold text-[1.125rem] mt-4 text-white tracking-wide">
               Total Aset
             </h2>
             <div className="flex items-center gap-3 mt-2">
-              <span className="font-bold text-[28px] text-white tracking-tight">
-                {totalAssetVisible ? formatRupiah(totalAssetVal) : "Rp••.•••.•••"}
+              <span className="font-bold text-[1.75rem] text-white tracking-tight">
+                {totalAssetVisible ? formatRupiah(totalAssetVal) : "Rp •••"}
               </span>
               <button
                 type="button"
@@ -184,10 +185,10 @@ export const HomeScreen = () => {
               </svg>
             </div>
             <div className="flex flex-col justify-center">
-              <span className="font-semibold text-black text-[13px] leading-tight font-montserrat">
-                {totalAssetVisible ? formatRupiah(totalIncomeVal) : "Rp••.•••.•••"}
+              <span className="font-semibold text-black text-[0.8125rem] leading-tight font-montserrat">
+                {totalAssetVisible ? formatRupiah(totalIncomeVal) : "Rp •••"}
               </span>
-              <span className="text-black text-[12px] leading-none font-open-sans">
+              <span className="text-black text-[0.75rem] leading-none font-open-sans">
                 Pemasukan
               </span>
             </div>
@@ -201,10 +202,10 @@ export const HomeScreen = () => {
               </svg>
             </div>
             <div className="flex flex-col justify-center">
-              <span className="font-semibold text-black text-[13px] leading-tight font-montserrat">
-                {totalAssetVisible ? formatRupiah(totalExpenseVal) : "Rp••.•••.•••"}
+              <span className="font-semibold text-black text-[0.8125rem] leading-tight font-montserrat">
+                {totalAssetVisible ? formatRupiah(totalExpenseVal) : "Rp •••"}
               </span>
-              <span className="text-black text-[12px] leading-none font-open-sans">
+              <span className="text-black text-[0.75rem] leading-none font-open-sans">
                 Pengeluaran
               </span>
             </div>
@@ -213,8 +214,8 @@ export const HomeScreen = () => {
       </section>
 
       {/* 4. Accounts Carousel Header */}
-      <section aria-labelledby="kas-dan-aset-kamu" className="px-[29px] mt-8 flex items-center justify-between flex-shrink-0 z-20">
-        <h2 id="kas-dan-aset-kamu" className="font-semibold text-[#414040] text-[16px] leading-none font-montserrat">
+      <section aria-labelledby="kas-dan-aset-kamu" className="px-[29px] mt-6 flex items-center justify-between flex-shrink-0 z-20">
+        <h2 id="kas-dan-aset-kamu" className="font-semibold text-[#414040] text-[1rem] leading-none font-montserrat">
           Kas dan Aset Kamu
         </h2>
         <button
@@ -223,7 +224,7 @@ export const HomeScreen = () => {
           aria-label="Lihat semua akun"
           className="flex items-center gap-[5px] hover:opacity-80 transition-all cursor-pointer"
         >
-          <span className="font-semibold text-[#1f5ba3] text-[12px] leading-none">
+          <span className="font-semibold text-[#1f5ba3] text-[0.75rem] leading-none">
             Liat Semua Akun
           </span>
           <svg className="w-[7px] h-3.5 text-[#1f5ba3]" fill="currentColor" viewBox="0 0 7 14">
@@ -239,21 +240,21 @@ export const HomeScreen = () => {
       >
         {accounts.map((card) => {
           const isVisible = card.isVisible;
-          const displayedBalance = isVisible ? formatRupiah(card.balance) : "Rp••.•••.•••";
+          const displayedBalance = isVisible ? formatRupiah(card.balance) : "Rp •••";
 
           return (
             <article
               key={card.id}
-              className="w-[338px] h-[158px] shrink-0 bg-gradient-to-r from-[#2ba697] via-[#1eaea0] to-[#175448] p-[1.5px] rounded-2xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] relative"
+              className="w-[21.125rem] h-[9.875rem] shrink-0 bg-gradient-to-r from-[#2ba697] via-[#1eaea0] to-[#175448] p-[0.09375rem] rounded-2xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] relative"
             >
-              <div className="w-full h-full bg-white rounded-[15px] p-[21px] flex flex-col justify-between">
+              <div className="w-full h-full bg-white rounded-[0.9375rem] p-[1rem] flex flex-col justify-between">
                 {/* Header & Balance */}
                 <div>
-                  <h3 className="font-semibold text-black text-[16px] leading-none font-montserrat">
+                  <h3 className="font-semibold text-black text-[1rem] leading-none font-montserrat">
                     {card.name}
                   </h3>
-                  <div className="flex items-center gap-[11px] mt-3">
-                    <span className="font-bold text-black text-[24px] leading-none tracking-tight">
+                  <div className="flex items-center gap-[0.6875rem] mt-2">
+                    <span className="font-bold text-black text-[1.5rem] leading-none tracking-tight">
                       {displayedBalance}
                     </span>
                     <button
@@ -277,36 +278,36 @@ export const HomeScreen = () => {
                 </div>
 
                 {/* Micro Sub-cards */}
-                <div className="flex gap-[16px] mt-4">
+                <div className="flex gap-[0.5rem] mt-2">
                   {/* Sub Pemasukan */}
-                  <div className="w-[149px] h-[45px] bg-[#ffffff] border border-[#d9d9d9] rounded-[10px] flex items-center pl-2.5 gap-2 shadow-sm">
-                    <div className="w-[27px] h-[27px] bg-[#d9d9d9] rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 text-[#02b399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <div className="flex-1 min-w-0 h-[2.8125rem] bg-[#ffffff] border border-[#d9d9d9] rounded-[0.625rem] flex items-center pl-1.5 gap-1.5 shadow-sm">
+                    <div className="w-[1.6875rem] h-[1.6875rem] bg-[#d9d9d9] rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3.5 h-3.5 text-[#02b399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                       </svg>
                     </div>
-                    <div className="flex flex-col justify-center">
-                      <span className="font-semibold text-black text-[13px] leading-tight font-montserrat">
-                        {isVisible ? formatRupiah(card.income) : "Rp••.•••.•••"}
+                    <div className="flex flex-col justify-center min-w-0 overflow-hidden">
+                      <span className="font-semibold text-black text-[0.8125rem] leading-tight font-montserrat truncate">
+                        {isVisible ? formatRupiah(card.income) : "Rp••"}
                       </span>
-                      <span className="text-black text-[11px] leading-none font-open-sans">
+                      <span className="text-black text-[0.6875rem] leading-none font-open-sans truncate">
                         Pemasukan
                       </span>
                     </div>
                   </div>
 
                   {/* Sub Pengeluaran */}
-                  <div className="w-[149px] h-[45px] bg-[#ffffff] border border-[#d9d9d9] rounded-[10px] flex items-center pl-2.5 gap-2 shadow-sm">
-                    <div className="w-[27px] h-[27px] bg-[#d9d9d9] rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 text-[#e5423b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <div className="flex-1 min-w-0 h-[2.8125rem] bg-[#ffffff] border border-[#d9d9d9] rounded-[0.625rem] flex items-center pl-1.5 gap-1.5 shadow-sm">
+                    <div className="w-[1.6875rem] h-[1.6875rem] bg-[#d9d9d9] rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3.5 h-3.5 text-[#e5423b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                       </svg>
                     </div>
-                    <div className="flex flex-col justify-center">
-                      <span className="font-semibold text-black text-[13px] leading-tight font-montserrat">
-                        {isVisible ? formatRupiah(card.expense) : "Rp••.•••.•••"}
+                    <div className="flex flex-col justify-center min-w-0 overflow-hidden">
+                      <span className="font-semibold text-black text-[0.8125rem] leading-tight font-montserrat truncate">
+                        {isVisible ? formatRupiah(card.expense) : "Rp •••"}
                       </span>
-                      <span className="text-black text-[11px] leading-none font-open-sans">
+                      <span className="text-black text-[0.6875rem] leading-none font-open-sans truncate">
                         Pengeluaran
                       </span>
                     </div>
@@ -328,12 +329,12 @@ export const HomeScreen = () => {
           <button
             type="button"
             onClick={() => handleNavigation('navigate_to_laporan')}
-            className="w-[70px] h-[70px] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="w-[4rem] h-[4rem] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
             aria-label="Buka laporan"
           >
-            <img src={report} alt="report" />
+            <img src={report} alt="report" className="w-[2rem]" />
           </button>
-          <span className="font-semibold text-black text-[12px] font-montserrat">
+          <span className="font-semibold text-black text-[0.75rem] font-montserrat">
             Laporan
           </span>
         </div>
@@ -343,12 +344,12 @@ export const HomeScreen = () => {
           <button
             type="button"
             onClick={() => handleNavigation('navigate_to_analisa')}
-            className="w-[70px] h-[70px] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="w-[4rem] h-[4rem] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
             aria-label="Buka analisa"
           >
-            <img src={grafik} alt="grafik" />
+            <img src={grafik} alt="grafik" className="w-[2rem]" />
           </button>
-          <span className="font-semibold text-black text-[12px] font-montserrat">
+          <span className="font-semibold text-black text-[0.75rem] font-montserrat">
             Analisa
           </span>
         </div>
@@ -358,12 +359,12 @@ export const HomeScreen = () => {
           <button
             type="button"
             onClick={() => handleNavigation('navigate_to_riwayat')}
-            className="w-[70px] h-[70px] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="w-[4rem] h-[4rem] bg-[#f5b95f] rounded-[20px] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
             aria-label="Buka riwayat"
           >
-            <img src={history} alt="history" />
+            <img src={history} alt="history" className="w-[2rem]" />
           </button>
-          <span className="font-semibold text-black text-[12px] font-montserrat">
+          <span className="font-semibold text-black text-[0.75rem] font-montserrat">
             Riwayat
           </span>
         </div>
@@ -378,20 +379,20 @@ export const HomeScreen = () => {
           {/* Top text content group to keep title & desc together */}
           <div className="flex flex-col z-20 relative">
             <div className="flex justify-between items-start gap-4">
-              <h3 className="font-semibold text-black text-[16px] leading-[20px] font-montserrat w-[197px]">
+              <h3 className="font-semibold text-black text-[1rem] leading-[20px] font-montserrat w-[197px]">
                 Transaksi hari ini belum dicatat?
               </h3>
               <button
                 type="button"
                 onClick={() => handleNavigation('navigate_to_catat')}
-                className="w-[136px] h-[40px] bg-gradient-to-r from-[#37A1A1] to-[#143B3B] text-white font-bold text-[14px] rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                className="w-[136px] h-[40px] bg-gradient-to-r from-[#37A1A1] to-[#143B3B] text-white font-bold text-[0.875rem] rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
               >
                 Catat sekarang
               </button>
             </div>
 
             {/* Subtitle description */}
-            <p className="font-medium text-[#6b7073] text-[14px] leading-[20px] font-montserrat mt-3 w-full max-w-[338px]">
+            <p className="font-medium text-[#6b7073] text-[0.875rem] leading-[20px] font-montserrat mt-3 w-full max-w-[338px]">
               Jangan sampai ada bon yang hilang. Pembukuan rapi, pantau untung jadi mudah!
             </p>
           </div>
@@ -413,10 +414,10 @@ export const HomeScreen = () => {
           type="button"
           onClick={() => handleNavigation('navigate_to_catat')}
           aria-label="Catat transaksi"
-          className="w-2/3 h-[60px] bg-gradient-to-r from-[#2ba697] via-[#1eaea0] to-[#175448] p-[2px] rounded-full shadow-lg hover:scale-102 active:scale-98 transition-all cursor-pointer"
+          className="w-2/3 h-[40px] bg-gradient-to-r from-[#2ba697] via-[#1eaea0] to-[#175448] p-[2px] rounded-full shadow-lg hover:scale-102 active:scale-98 transition-all cursor-pointer"
         >
           <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-            <span className="text-black text-lg font-semibold font-montserrat">
+            <span className="text-black text-[1.125rem] font-semibold font-montserrat">
               Catat Transaksi
             </span>
           </div>
