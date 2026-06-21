@@ -111,7 +111,10 @@ class AnalysisController extends Controller
      */
     private function getTopCategory($query)
     {
-        $top = $query->selectRaw('notes, sum(amount) as total_amount')
+        // Clone to calculate total sum before modifying the query
+        $totalSum = (clone $query)->sum('amount');
+
+        $top = (clone $query)->selectRaw('notes, sum(amount) as total_amount')
             ->groupBy('notes')
             ->orderBy('total_amount', 'desc')
             ->first();
@@ -124,7 +127,6 @@ class AnalysisController extends Controller
             ];
         }
 
-        $totalSum = $query->sum('amount');
         $percent = $totalSum > 0 ? round(($top->total_amount / $totalSum) * 100) : 0;
 
         return [
