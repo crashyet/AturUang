@@ -61,7 +61,7 @@ class AnalysisController extends Controller
 
         $overallAnalysis = [
             'name' => 'Keseluruhan Akun',
-            'total_amount' => $overallBalance,
+            'total_amount' => floatval($overallIncome - $overallExpense),
             'pemasukan_percent' => intval($overallIncomePercent),
             'pengeluaran_percent' => intval($overallExpensePercent),
             'top_pemasukan' => $topOverallPemasukan,
@@ -89,7 +89,7 @@ class AnalysisController extends Controller
 
             $accountsAnalysis[] = [
                 'name' => $account->name,
-                'total_amount' => floatval($account->balance),
+                'total_amount' => floatval($accountIncome - $accountExpense),
                 'pemasukan_percent' => intval($accountIncomePercent),
                 'pengeluaran_percent' => intval($accountExpensePercent),
                 'top_pemasukan' => $topAccountPemasukan,

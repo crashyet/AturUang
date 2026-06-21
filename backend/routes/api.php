@@ -14,6 +14,7 @@ Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 Route::post('/auth/check-email', [AuthController::class, 'checkEmail']);
 Route::post('/auth/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // Protected routes (Sanctum)
 Route::middleware('auth:sanctum')->group(function () {

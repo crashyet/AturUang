@@ -430,4 +430,54 @@ class AuthController extends Controller
             'message' => 'Kode OTP valid.'
         ]);
     }
+
+    /**
+     * Reset password.
+     */
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $email = $request->email;
+
+        // Verify that OTP has been verified
+        $isVerified = Cache::get('otp_verified_forgot_password_' . $email);
+        if (!$isVerified) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Silakan lakukan verifikasi OTP terlebih dahulu.'
+            ], 400);
+        }
+
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User tidak ditemukan.'
+            ], 404);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Consume the verification flag
+        Cache::forget('otp_verified_forgot_password_' . $email);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Password berhasil diubah.'
+        ]);
+    }
 }
